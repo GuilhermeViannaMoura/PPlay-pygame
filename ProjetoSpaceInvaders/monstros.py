@@ -2,6 +2,8 @@ from PPlay.window import *
 from PPlay.gameimage import *
 from PPlay.sprite import *
 
+pontos = 0
+
 def cria_inimigos():
     n_linhas = 5
     n_colunas = 8
@@ -46,3 +48,29 @@ def corrige_bug_patinacao(inimigos,caso):
                 inimigos[i][j].x -= 3
             elif caso == 2:
                 inimigos[i][j].x += 3
+
+def colisao_tiro_inimigo(tiros,inimigos,janela):
+    sair = False
+    x_esq = inimigos[0][0].x
+    x_dir = inimigos[0][-1].x + inimigos[0][-1].width
+    y_baixo = inimigos[-1][-1].y + inimigos[-1][-1].height
+    y_cima = inimigos[0][0].y
+    global pontos
+    janela.draw_text("PONTOS: %d" %pontos,janela.width-150,10,size=20,color=(0,0,0))
+    for i in range(len(tiros)):
+        if (tiros[i].y < y_baixo and tiros[i].y > y_cima and
+        tiros[i].x < x_dir and tiros[i].x > x_esq): #optimização dos tiros
+            for j in range(len(inimigos)-1,-1,-1): #checa colisao primeiro nos inimigos de baixo
+                for k in range(len(inimigos[j])):
+                    if tiros[i].collided(inimigos[j][k]):
+                        inimigos[j].pop(k)
+                        if len(inimigos[-1]) == 0:
+                            inimigos.pop(-1) #retira lista vazia quando todos os monstros da linha são destruídos
+                        tiros.pop(i)
+                        sair = True
+                        pontos += 10
+                        break
+                if sair:
+                    break
+        if sair:
+            break
