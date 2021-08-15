@@ -21,6 +21,10 @@ game_background = GameImage("LabJogos/ProjetoSpaceInvaders/imagens/starBackgroun
 tiros = []
 inimigos = cria_inimigos()
 vel_inimigo = 100
+relogio = 0
+nFrames = 0
+fps = 0
+pontos = 0
 
 #GAME LOOP
 while True:
@@ -33,8 +37,16 @@ while True:
         vel_inimigo = colisao_inimigo_parede(inimigos,janela,vel_inimigo)
         desenha_inimigos(inimigos,vel_inimigo,janela)
         pMove(nave,teclado,janela)
-        atira(teclado,tiros,nave,janela)
-
+        projeteis = atira(teclado,tiros,nave,janela)
+        colisao_tiro_inimigo(projeteis,inimigos,janela)            
+        #FPS
+        relogio += janela.delta_time()
+        nFrames += 1
+        if relogio>=1:
+            fps = nFrames
+            nFrames = 0
+            relogio = 0
+        janela.draw_text("FPS: %d" %fps,10,10,size=20,color=(0,0,0),font_name="Arial",bold=True)
         #keyboard interactions
         if teclado.key_pressed("ESC"): #volta pro menu
             controle = "menu"
