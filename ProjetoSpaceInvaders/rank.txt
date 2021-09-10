@@ -1,0 +1,15 @@
+gui 70
+jorge 180
+igor 130
+arthur 20
+roger 170
+pedro 240
+rafael 300
+guilherme 150
+matheus 250
+paulo 0
+roger 380
+renato 780
+eu 820
+guilherme 1240
+junior 610
