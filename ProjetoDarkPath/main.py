@@ -6,7 +6,6 @@ from obstaculos import *
 janela = Window(1600,900)
 teclado = Window.get_keyboard()
 janela.set_title("Dark Path")
-os.chdir("C:/Users/T-Gamer/Desktop/CODES/VS code/LabJogos/ProjetoDarkPath")
 
 player_running = Sprite("imagens/player/run.png",9)
 player_running.set_total_duration(800)
