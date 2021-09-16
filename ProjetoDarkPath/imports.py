@@ -8,4 +8,3 @@ import os
 VIDAS = 3
 HIT = False
 TEMPO_INVENCIVEL = 0
-PONTOS = 0

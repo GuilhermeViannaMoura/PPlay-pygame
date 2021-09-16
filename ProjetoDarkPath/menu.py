@@ -2,7 +2,7 @@ from imports import *
  
 dificuldade = "medium"
 
-def menu(janela):
+def menu(janela,perdeu,ult_pontuacao):
     #Inicializacao
     mouse = Window.get_mouse()
     fundo = GameImage("imagens/fundo2.png")
@@ -56,6 +56,8 @@ def menu(janela):
             play_button.draw()
             level_button.draw()
             quit_button.draw()
+            if perdeu:
+                janela.draw_text("ÚLTIMA PONTUAÇÃO: %d"%ult_pontuacao,janela.width/2-220,50,40,color=(150,0,0),font_name="Arial",bold=True)
             #rank_button.draw()
             title.draw()
             if mouse.is_over_object(play_button):

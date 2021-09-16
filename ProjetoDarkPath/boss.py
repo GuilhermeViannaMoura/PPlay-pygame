@@ -4,7 +4,16 @@ from random import randint
 
 relogio = 0
 relogio2 = 0
+relogio3 = 0
 velocidades = []
+#acertou = False
+
+
+def inicia_boss(pontos):
+    if pontos == 10 or pontos == 150 or pontos == 250: # 40?
+        return True
+    else:
+        return False
 
 def desenha_bossf(janela,boss_final):
     boss_final.draw()
@@ -24,8 +33,9 @@ def ataques_boss(boss_atck1,boss_atck2,protecao,dif,janela,boss):
 
     ### CRIA ATAQUES ###
     relogio += janela.delta_time()
-    vel1 = 500 * janela.delta_time()
-    if relogio >= delay + uniform(0,1):
+    #vel1 = 500 * janela.delta_time()
+    vel1 = 5 # essa velocidade com o delta_time estava gerando muitos bugs 
+    if relogio >= delay:
         atck1 = Sprite("imagens/bosses/atck1.png")
         atck1.x = boss.x - atck1.width
         atck1.y = boss.y + randint(100,200)
@@ -57,8 +67,30 @@ def ataques_boss(boss_atck1,boss_atck2,protecao,dif,janela,boss):
 
     return boss_atck1,boss_atck2
 
-def rebate_ataque(player,rebate,atk):
+def rebate_ataque(player,rebate,atk,janela,vidas):
+    global velocidades
+    global relogio3
+    relogio3 += janela.delta_time()
+    for i in range(len(atk)):
+        if atk[i].x <= player.x + player.width/2 + 30:
+            vidas -= 1
+            atk.pop(i)
+            velocidades.pop(i)
+        elif atk[i].x <= player.x + player.width and rebate and relogio3 >= 1:
+            velocidades[i] *= -1.5
+            relogio3 = 0
+
+    return vidas
+
+def colisao_rebatida_boss(atk,boss,vida_boss,janela,pontos):
     global velocidades
     for i in range(len(atk)):
-        if atk[i].x <= player.x + player.width and rebate:
-            velocidades[i] *= -1.5
+        if atk[i].x >= boss.x + 50:
+            atk.pop(i)
+            velocidades.pop(i)
+            vida_boss -= 1
+            pontos += 2
+            break
+
+    janela.draw_text("VIDAS BOSS: %d"%vida_boss,janela.width-200,10,20,color=(150,150,150),font_name="Arial",bold=True)
+    return vida_boss,pontos

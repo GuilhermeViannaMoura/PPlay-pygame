@@ -4,9 +4,8 @@ from random import randint
 rel = 0
 rel2 = 0
 
-def cria_obstaculos(janela,obstaculos,obstaculos2,lbarras,dif):
+def cria_obstaculos(janela,obstaculos,obstaculos2,lbarras,dif,pontos):
     global rel
-    global PONTOS
     r = randint(1,3)
     rel += janela.delta_time()
     if dif == "easy":
@@ -17,8 +16,8 @@ def cria_obstaculos(janela,obstaculos,obstaculos2,lbarras,dif):
         delay = 1
 
     if rel >= delay: # soma pontos com o passar do tempo, dificuldades mais altas somam pontos mais rapido
-        PONTOS += 1
-    janela.draw_text("PONTOS: %d"%PONTOS,10,10,20,color=(150,150,150),font_name="Arial",bold=True)
+        pontos += 1
+
     #obstaculos2 eh uma lista com sprites com uma hitbox que funciona melhor para o tamanho que eh desenhado da lista obstaculos
     if r == 1 and rel >= delay:
         spikes = Sprite("imagens/obstaculos/spikes.png")
@@ -48,7 +47,7 @@ def cria_obstaculos(janela,obstaculos,obstaculos2,lbarras,dif):
         lbarras.append(barra) # lista para tratar a colisao das barras de forma diferentes aos outros obstaculos
         rel = 0
     
-    return obstaculos,obstaculos2,lbarras
+    return obstaculos,obstaculos2,lbarras,pontos
 
 def desenha_obstaculos(obstaculos, janela,obstaculos2,lbarras,dif):
     if dif == "easy":
@@ -93,9 +92,8 @@ def desenha_bolas(bolas,janela):
         bolas[i].draw()
         bolas[i].move_y(vel_bolas)
 
-def inicia_boss():
-    global PONTOS
-    if PONTOS == 10: # 40?
-        return True
-    else:
-        return False
+# def inicia_boss(pontos):
+#     if pontos == 10: # 40?
+#         return True
+#     else:
+#         return False

@@ -103,8 +103,7 @@ def player(slide,jump,run,attack,janela,teclado,py):
 
     return attacking
 
-def colisao_player_obstaculo(player,obstaculos2,lbarras,bolas,teclado,janela,escudo):
-    global VIDAS
+def colisao_player_obstaculo(player,obstaculos2,lbarras,bolas,teclado,janela,escudo,vidas):
     global HIT
     global TEMPO_INVENCIVEL
 
@@ -114,23 +113,23 @@ def colisao_player_obstaculo(player,obstaculos2,lbarras,bolas,teclado,janela,esc
             player.x + player.width  - 70 > obstaculos2[i].x and
             player.y < obstaculos2[i].y + obstaculos2[i].height and
             player.y + player.height > obstaculos2[i].y):
-                VIDAS -= 1
+                vidas -= 1
                 HIT = True
                 #return "menu",[],[],[]
         for i in range(len(lbarras)): # colisao com as barras penduradas
             if player.x + player.width -70 >= lbarras[i].x and player.x +70 <= lbarras[i].x + lbarras[i].width:
                 if teclado.key_pressed("S"):
-                    return "jogo",obstaculos2,lbarras,bolas
+                    return "jogo",obstaculos2,lbarras,bolas,vidas
                 else:
-                    VIDAS -= 1
+                    vidas -= 1
                     HIT = True
                     #return "menu",[],[],[]
         
         for i in range(len(bolas)):
             if player.collided(bolas[i]):
-                VIDAS -= 1
+                vidas -= 1
                 HIT = True
-                print(VIDAS)
+                #print(vidas)
                 break
                 #return "menu",[],[],[]
     else: #HIT == True
@@ -142,20 +141,42 @@ def colisao_player_obstaculo(player,obstaculos2,lbarras,bolas,teclado,janela,esc
             TEMPO_INVENCIVEL = 0
             HIT = False
 
-    if VIDAS == 0:
-        return "menu",[],[],[]
+    if vidas == 0:
+        return "menu",[],[],[],vidas
     
-    return "jogo",obstaculos2,lbarras,bolas
+    return "jogo",obstaculos2,lbarras,bolas,vidas
 
-def reinicia():
-    global VIDAS
-    global PONTOS
+def colisao_atck2Boss_player(player,atk,vidas,janela,escudo):
+    global HIT
+    global TEMPO_INVENCIVEL
+    if HIT == False:
+        for i in range(len(atk)):
+            if (player.x + 70 < atk[i].x + atk[i].width and
+                player.x + player.width  - 70 > atk[i].x and
+                player.y < atk[i].y + atk[i].height and
+                player.y + player.height > atk[i].y):
+
+                vidas -= 1
+                HIT = True
+    
+    else:
+        TEMPO_INVENCIVEL += janela.delta_time()
+        escudo.x = player.x-50
+        escudo.y = player.y-20
+        escudo.draw()
+        if TEMPO_INVENCIVEL >= 3:
+            TEMPO_INVENCIVEL = 0
+            HIT = False
+
+    return vidas
+
+
+def reinicia(vidas, pontos):
     #obstaculos,obstaculos2,lbarras,bolas = [],[],[],[]
-    if VIDAS == 0:
-        VIDAS = 3
-        PONTOS = 0
-        # nome = input("Digite seu nome para o ranking: ")
-        # linha = str(PONTOS) + "\n"
-        # arq = open("rank.txt","a")
-        # arq.writelines(linha)
-        # arq.close()
+    if vidas == 0:
+        vidas = 3
+        pontos = 0
+
+    return vidas,pontos
+
+# def colisao_bossAtck1_player():

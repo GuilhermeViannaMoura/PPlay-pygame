@@ -52,6 +52,8 @@ lbarras = []
 bolas = []
 boss_atck1 = []
 boss_atck2 = []
+pontos = 1
+nVidas = 3
 
 music_menu = Sound("musicas/Menu Music.wav")
 music_fase = Sound("musicas/In-game-Running-music.wav")
@@ -67,16 +69,21 @@ escudo = Sprite("imagens/escudo.png")
 controle = "menu"
 dif = "medium"
 boss = False
-pontos2 = 40
 rebate_ataque_boss = False
+vida_boss_incremento = 10 # 20
+vida_boss = vida_boss_incremento
+fase_boss = 1
+perdeu = False
+ult_pontuacao = 0
 
 while True:
     if controle == "menu":
         music_boss.stop()
         music_fase.stop()
         music_menu.play()
-        controle, dif = menu(janela)
-        reinicia()
+        controle, dif = menu(janela,perdeu,ult_pontuacao)
+        nVidas,pontos = reinicia(nVidas,pontos)
+
         #obstaculos = []
     elif controle == "jogo":
         ### DESENHA FUNDO ###
@@ -91,27 +98,47 @@ while True:
         ### DESENHA PLAYER ###
         rebate_ataque_boss = player(player_sliding,player_jump,player_running,player_attack,janela,teclado,py)
 
-        boss = inicia_boss()
+        janela.draw_text("PONTOS: %d"%pontos,10,10,20,color=(150,150,150),font_name="Arial",bold=True)
+        janela.draw_text("VIDAS RESTANTES: %d"%nVidas,10,30,20,color=(150,0,0),font_name="Arial",bold=True)
 
-        if boss == False:
+        if boss == False: # FASE
+            boss = inicia_boss(pontos)
             ### MUSICA ###
             music_menu.stop()
+            music_boss.stop()
             music_fase.play()
 
             ### DESENHA OBSTACULOS ###
-            obstaculos,obstaculos2,lbarras = cria_obstaculos(janela,obstaculos,obstaculos2,lbarras,dif)
+            obstaculos,obstaculos2,lbarras,pontos = cria_obstaculos(janela,obstaculos,obstaculos2,lbarras,dif,pontos)
             bolas = cria_bolas(bolas,janela,dif)
             desenha_obstaculos(obstaculos,janela,obstaculos2,lbarras,dif)
-            controle,obstaculos2,lbarras,bolas = colisao_player_obstaculo(player_running,obstaculos2,lbarras,bolas,teclado,janela,escudo)
+            controle,obstaculos2,lbarras,bolas,nVidas = colisao_player_obstaculo(player_running,obstaculos2,lbarras,bolas,teclado,janela,escudo,nVidas)
             desenha_bolas(bolas,janela)
-        else: # LUTA BOSS
+        elif boss == True: # LUTA BOSS
             music_fase.stop()
+            music_menu.stop()
             music_boss.play()
             desenha_bossf(janela,boss_final)
             boss_atck1,boss_atck2 = ataques_boss(boss_atck1,boss_atck2,protecao,dif,janela,boss_final)
-            rebate_ataque(player_running,rebate_ataque_boss,boss_atck1)
+            nVidas = rebate_ataque(player_running,rebate_ataque_boss,boss_atck1,janela,nVidas)
+            vida_boss,pontos = colisao_rebatida_boss(boss_atck1,boss_final,vida_boss,janela,pontos)
+            nVidas = colisao_atck2Boss_player(player_running,boss_atck2,nVidas,janela,escudo)
+            if vida_boss == 0:
+                fase_boss += 1
+                vida_boss = vida_boss_incremento * fase_boss
+                obstaculos2 = []
+                obstaculos = []
+                lbarras = []
+                bolas = []
+                boss = False
 
         if teclado.key_pressed("ESC"):
             controle = "menu"
+
+        if nVidas == 0:
+            perdeu = True
+            ult_pontuacao = pontos
+            controle = "menu"
+            
 
         janela.update()
