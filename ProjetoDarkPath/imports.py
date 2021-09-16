@@ -4,3 +4,8 @@ from PPlay.sprite import *
 from PPlay.sound import *
 from PPlay.collision import *
 import os
+
+VIDAS = 3
+HIT = False
+TEMPO_INVENCIVEL = 0
+PONTOS = 0

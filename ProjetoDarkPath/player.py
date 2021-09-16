@@ -101,19 +101,61 @@ def player(slide,jump,run,attack,janela,teclado,py):
             running = True
             tempo_aa = 0
 
-def colisao_player_obstaculo(player,obstaculos2,lbarras,teclado):
-    for i in range(len(obstaculos2)):
-        if (player.x + 70 < obstaculos2[i].x + obstaculos2[i].width and
-        player.x + player.width  - 70 > obstaculos2[i].x and
-        player.y < obstaculos2[i].y + obstaculos2[i].height and
-        player.y + player.height > obstaculos2[i].y):
-            # print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-            return "menu",[],[]
-    for i in range(len(lbarras)):
-        if player.x + player.width -70 >= lbarras[i].x and player.x +70 <= lbarras[i].x + lbarras[i].width:
-            if teclado.key_pressed("S"):
-                return "jogo",obstaculos2,lbarras
-            else:
-                return "menu",[],[]
+    return attacking
+
+def colisao_player_obstaculo(player,obstaculos2,lbarras,bolas,teclado,janela,escudo):
+    global VIDAS
+    global HIT
+    global TEMPO_INVENCIVEL
+
+    if HIT == False:
+        for i in range(len(obstaculos2)): # colisao com os obstaculos terrestres
+            if (player.x + 70 < obstaculos2[i].x + obstaculos2[i].width and
+            player.x + player.width  - 70 > obstaculos2[i].x and
+            player.y < obstaculos2[i].y + obstaculos2[i].height and
+            player.y + player.height > obstaculos2[i].y):
+                VIDAS -= 1
+                HIT = True
+                #return "menu",[],[],[]
+        for i in range(len(lbarras)): # colisao com as barras penduradas
+            if player.x + player.width -70 >= lbarras[i].x and player.x +70 <= lbarras[i].x + lbarras[i].width:
+                if teclado.key_pressed("S"):
+                    return "jogo",obstaculos2,lbarras,bolas
+                else:
+                    VIDAS -= 1
+                    HIT = True
+                    #return "menu",[],[],[]
+        
+        for i in range(len(bolas)):
+            if player.collided(bolas[i]):
+                VIDAS -= 1
+                HIT = True
+                print(VIDAS)
+                break
+                #return "menu",[],[],[]
+    else: #HIT == True
+        TEMPO_INVENCIVEL += janela.delta_time()
+        escudo.x = player.x-50
+        escudo.y = player.y-20
+        escudo.draw()
+        if TEMPO_INVENCIVEL >= 3:
+            TEMPO_INVENCIVEL = 0
+            HIT = False
+
+    if VIDAS == 0:
+        return "menu",[],[],[]
     
-    return "jogo",obstaculos2,lbarras
+    return "jogo",obstaculos2,lbarras,bolas
+
+def reinicia():
+    global VIDAS
+    global PONTOS
+    #obstaculos,obstaculos2,lbarras,bolas = [],[],[],[]
+    if VIDAS == 0:
+        VIDAS = 3
+        PONTOS = 0
+        # nome = input("Digite seu nome para o ranking: ")
+        # linha = str(PONTOS) + "\n"
+        # arq = open("rank.txt","a")
+        # arq.writelines(linha)
+        # arq.close()

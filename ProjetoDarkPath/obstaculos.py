@@ -2,13 +2,25 @@ from imports import *
 from random import randint
 
 rel = 0
+rel2 = 0
 
-def cria_obstaculos(janela,obstaculos,obstaculos2,lbarras):
+def cria_obstaculos(janela,obstaculos,obstaculos2,lbarras,dif):
     global rel
+    global PONTOS
     r = randint(1,3)
     rel += janela.delta_time()
+    if dif == "easy":
+        delay = 2
+    elif dif == "medium":
+        delay = 1.5
+    elif dif == "hard":
+        delay = 1
+
+    if rel >= delay: # soma pontos com o passar do tempo, dificuldades mais altas somam pontos mais rapido
+        PONTOS += 1
+    janela.draw_text("PONTOS: %d"%PONTOS,10,10,20,color=(150,150,150),font_name="Arial",bold=True)
     #obstaculos2 eh uma lista com sprites com uma hitbox que funciona melhor para o tamanho que eh desenhado da lista obstaculos
-    if r == 1 and rel >= 2:
+    if r == 1 and rel >= delay:
         spikes = Sprite("imagens/obstaculos/spikes.png")
         spikes2 = Sprite("imagens/obstaculos/spikes2.png")
         spikes.x = janela.width -50
@@ -18,7 +30,7 @@ def cria_obstaculos(janela,obstaculos,obstaculos2,lbarras):
         obstaculos.append(spikes)
         obstaculos2.append(spikes2)
         rel = 0
-    elif r == 2 and rel >= 2:
+    elif r == 2 and rel >= delay:
         blade = Sprite("imagens/obstaculos/blade.png")
         blade2 = Sprite("imagens/obstaculos/blade2.png")
         blade.x = janela.width -50
@@ -28,7 +40,7 @@ def cria_obstaculos(janela,obstaculos,obstaculos2,lbarras):
         obstaculos.append(blade)
         obstaculos2.append(blade2)
         rel = 0
-    elif r == 3 and rel >= 2:
+    elif r == 3 and rel >= delay:
         barra = Sprite("imagens/obstaculos/barra.png")
         barra.x = janela.width -50
         barra.y = -160
@@ -38,12 +50,52 @@ def cria_obstaculos(janela,obstaculos,obstaculos2,lbarras):
     
     return obstaculos,obstaculos2,lbarras
 
-def desenha_obstaculos(obstaculos, janela,obstaculos2,lbarras):
-    vel_obstaculo = -400 * janela.delta_time()
+def desenha_obstaculos(obstaculos, janela,obstaculos2,lbarras,dif):
+    if dif == "easy":
+        vel_obstaculo = -500 * janela.delta_time()
+    elif dif == "medium":
+        vel_obstaculo = -600 * janela.delta_time()
+    elif dif == "hard":
+        vel_obstaculo = -700 * janela.delta_time()
+
     for i in range(len(obstaculos)): # MOVE E DESENHA OS OBSTACULOS
         obstaculos[i].draw()
         obstaculos[i].move_x(vel_obstaculo)
     for i in range(len(obstaculos2)): # LISTA DAS HITBOXES ACOMPANHA O OBSTACULO REAL
         obstaculos2[i].move_x(vel_obstaculo)
-    # for i in range(len(lbarras)):
-    #     lbarras[i].move_x(vel_obstaculo) #DESCOMENTAR ESSE TRECHO FARÁ AS BARRAS SE MOVEREM NO DOBRO DA VELOCIDADE
+    for i in range(len(lbarras)):
+        lbarras[i].move_x(vel_obstaculo/2) #MOVE INDIVIDUALMENTE AS BARRAS FAZENDO ELAS SEREM MAIS RAPIDAS QUE OS OUTROS OBSTACULOS
+
+def cria_bolas(bolas,janela,dif):
+    global rel2
+    rel2 += janela.delta_time()
+
+    if dif == "easy":
+        delay = 2
+    elif dif == "medium":
+        delay = 1.5
+    elif dif == "hard":
+        delay = 1
+
+    if rel2 > delay:
+        x = randint(50,janela.width-200)
+        bola = Sprite("imagens/obstaculos/bola-de-fogo.png")
+        bola.x = x
+        bola.y = -bola.height
+        bolas.append(bola)
+        rel2 = 0
+    
+    return bolas
+
+def desenha_bolas(bolas,janela):
+    vel_bolas = 500 * janela.delta_time()
+    for i in range(len(bolas)):
+        bolas[i].draw()
+        bolas[i].move_y(vel_bolas)
+
+def inicia_boss():
+    global PONTOS
+    if PONTOS == 10: # 40?
+        return True
+    else:
+        return False

@@ -56,7 +56,7 @@ def menu(janela):
             play_button.draw()
             level_button.draw()
             quit_button.draw()
-            rank_button.draw()
+            #rank_button.draw()
             title.draw()
             if mouse.is_over_object(play_button):
                 play_button.x = janela.width/2 - 160 #destaca botao quando mouse esta em cima
@@ -70,10 +70,10 @@ def menu(janela):
                 quit_button.x = janela.width/2 -160 #destaca botao quando mouse esta em cima
                 if mouse.is_button_pressed(1):
                     c_menu = "quit"
-            elif mouse.is_over_object(rank_button):
-                rank_button.x = 11
-                if mouse.is_button_pressed(1):
-                    c_menu = "rank"
+            # elif mouse.is_over_object(rank_button):
+            #     rank_button.x = 11
+            #     if mouse.is_button_pressed(1):
+            #         c_menu = "rank"
             else:
                 #encerra o destaque dos botoes quando o mouse nao esta mais em cima deles
                 play_button.x = janela.width/2 - 180 
@@ -110,28 +110,28 @@ def menu(janela):
                 medium_button.x = janela.width/2 - 150
                 hard_button.x = janela.width/2 - 150
         
-        elif c_menu == "rank":
-            fundo.draw()
-            back_button.draw()
-            arq = open("LabJogos/ProjetoDarkPath/rank.txt","r")
-            y_rank = 0
-            conteudo = []
-            for linha in arq:
-                conteudo.append(linha)
-            i = 5
-            while i > 0:
-                try:
-                    janela.draw_text("%s" %conteudo[-i],300,200 + y_rank,size=50,color=(1,1,1),font_name="Arial",bold=True)
-                except IndexError:
-                    pass
-                y_rank += 100
-                i -= 1
-            if mouse.is_over_object(back_button):
-                back_button.x = 20
-                if mouse.is_button_pressed(1):
-                    c_menu = "home"
-            else:
-                back_button.x = 10
+        # elif c_menu == "rank":
+        #     fundo.draw()
+        #     back_button.draw()
+        #     arq = open("rank.txt","r")
+        #     y_rank = 0
+        #     conteudo = []
+        #     for linha in arq:
+        #         conteudo.append(linha)
+        #     i = 5
+        #     while i > 0:
+        #         try:
+        #             janela.draw_text("%s" %conteudo[-i],300,200 + y_rank,size=50,color=(1,1,1),font_name="Arial",bold=True)
+        #         except IndexError:
+        #             pass
+        #         y_rank += 100
+        #         i -= 1
+        #     if mouse.is_over_object(back_button):
+        #         back_button.x = 20
+        #         if mouse.is_button_pressed(1):
+        #             c_menu = "home"
+        #     else:
+        #         back_button.x = 10
 
         elif c_menu == "quit":
             quit()
